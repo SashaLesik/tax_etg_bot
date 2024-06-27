@@ -137,7 +137,7 @@ def calculate_taxes_progress_scale(message):
         logging.info("message into int")
         bot.send_message(message.chat.id, text=f'''привет, твоя зп после налогов:
                       {number/2}''', reply_markup=markup)
-    except TypeError or ValueError:
+    except (TypeError, ValueError):
         logging.info("type error message not int")
         msg = bot.send_message(message.chat.id, "Вы ввели не число, попробуйте еще раз!")
         bot.register_next_step_handler(msg, input_salary_gross)
