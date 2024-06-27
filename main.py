@@ -80,12 +80,9 @@ def func(message):
     
     elif (message.text == "Рассчет по шкале 2025"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        bot.send_message(message.chat.id, text="Введи свою зп, сумма в гросс", reply_markup=markup)
-        if not (message.text == "Рассчет по шкале 2025" or message.text == "в меню"):
-            input_salary_gross()
-            bot.send_message(message.chat.id, text="свершилась магия", reply_markup=markup)
-        else:
-            bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать", reply_markup=markup)
+        msg = bot.send_message(message.chat.id, text="Введи свою зп, сумма в гросс", reply_markup=markup)
+        bot.register_next_step_handler(msg, input_salary_gross)
+        
 
 
 
