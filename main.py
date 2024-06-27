@@ -1,7 +1,7 @@
 import logging
 import os
 import telebot
-from tax_rus_calc import input_salary_gross
+# from tax_rus_calc import input_salary_gross
 from telebot import types
 from dotenv import load_dotenv
 
@@ -34,12 +34,11 @@ def start(message):
     btn1 = types.KeyboardButton("👋 Что я умею")
     btn2 = types.KeyboardButton("Выбрать страну")
     markup.add(btn1, btn2)
-    bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я налоговый справочник собранный для ETG(Островок)".format(message.from_user), reply_markup=markup)
-
+    msg_2 = bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я налоговый справочник собранный для ETG(Островок)".format(message.from_user), reply_markup=markup)
+    bot.register_next_step_handler(msg_2, func)
 
 
 @bot.message_handler(content_types=['text'])
-
 def func(message):
     if (message.text == "👋 Что я умею"):
         bot.send_message(message.chat.id, text="Описание")
@@ -80,15 +79,8 @@ def func(message):
     
     elif (message.text == "Рассчет по шкале 2025"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        msg = bot.send_message(message.chat.id, text="Введи свою зп, сумма в гросс", reply_markup=markup)
-        bot.register_next_step_handler(msg, input_salary_gross)
-        
-
-
-
-
-        
-        
+        msg_3 = bot.send_message(message.chat.id, text="Введи свою зп, сумма в гросс", reply_markup=markup)
+        bot.register_next_step_handler(msg_3, input_salary_gross)
 
     elif (message.text == 'в меню'):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -126,6 +118,29 @@ def func(message):
         bot.send_message(message.chat.id, text= {Person_Serbia})
     elif (message.text == 'Как ИП' and 'Сербия'):
         bot.send_message(message.chat.id, text= {Individual_ent_Serbia})
+
+def input_salary_gross(message):
+    logging.info("переход в input_sallary_gross")
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    if str(message) != 'Рассчет по шкале 2025' and str(message) != 'в меню':
+        bot.register_next_step_handler(message, calculate_taxes_progress_scale)
+    else:
+        bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать",
+                         reply_markup=markup)
+
+
+def calculate_taxes_progress_scale(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    try:
+        number = int(message.text)
+        logging.info("message into int")
+        bot.send_message(message.chat.id, text=f'''привет, твоя зп после налогов:
+                      {number/2}''', reply_markup=markup)
+    except TypeError or ValueError:
+        logging.info("type error message not int")
+        msg = bot.send_message(message.chat.id, "Вы ввели не число, попробуйте еще раз!")
+        bot.register_next_step_handler(msg, input_salary_gross)
 
 
 if __name__ == '__main__':
