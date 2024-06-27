@@ -5,6 +5,7 @@ services:
     build: ./chatbot
     environment:
     - APY_KEY_=${APY_KEY_}
+    - LOG_LEVEL=debug
 
   llm:
     build: ./llm
@@ -12,3 +13,4 @@ services:
     - "5005:5005"
     environment:
     - OPENAI_API_KEY=${OPENAI_API_KEY}
+    - LOG_LEVEL=debug
