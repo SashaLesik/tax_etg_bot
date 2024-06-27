@@ -1,7 +1,6 @@
 import logging
 import os
 import telebot
-# from tax_rus_calc import input_salary_gross
 from telebot import types
 from dotenv import load_dotenv
 
@@ -119,11 +118,12 @@ def func(message):
     elif (message.text == 'Как ИП' and 'Сербия'):
         bot.send_message(message.chat.id, text= {Individual_ent_Serbia})
 
+
 def input_salary_gross(message):
     logging.info("переход в input_sallary_gross")
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    if str(message) != 'Рассчет по шкале 2025' and str(message) != 'в меню':
+    if message.text != 'Рассчет по шкале 2025' and message.text != 'в меню':
         bot.register_next_step_handler(message, calculate_taxes_progress_scale)
     else:
         bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать",
