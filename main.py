@@ -77,9 +77,7 @@ def func(message):
         bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать", reply_markup=markup)
     
     elif (message.text == "Рассчет по шкале 2025"):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        msg_3 = bot.send_message(message.chat.id, text="Введи свою зп, сумма в гросс", reply_markup=markup)
-        bot.register_next_step_handler(msg_3, input_salary_gross)
+        input_salary_gross(message)
 
     elif (message.text == 'в меню'):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -123,7 +121,8 @@ def input_salary_gross(message):
     logging.info("переход в input_sallary_gross")
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    if message.text != 'Рассчет по шкале 2025' and message.text != 'в меню':
+    if message.text == 'Рассчет по шкале 2025':
+        bot.send_message(message.chat.id, text="Введи свою зп, сумма в гросс")
         bot.register_next_step_handler(message, calculate_taxes_progress_scale)
     else:
         bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать",
@@ -132,15 +131,25 @@ def input_salary_gross(message):
 
 def calculate_taxes_progress_scale(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    try:
-        number = int(message.text)
-        logging.info("message into int")
-        bot.send_message(message.chat.id, text=f'''привет, твоя зп после налогов:
-                      {number/2}''', reply_markup=markup)
-    except (TypeError, ValueError):
-        logging.info("type error message not int")
-        msg = bot.send_message(message.chat.id, "Вы ввели не число, попробуйте еще раз!")
-        bot.register_next_step_handler(msg, input_salary_gross)
+    if message.text == 'Рассчет по шкале 2025':
+        bot.send_message(message.chat.id, text="Введи свою зп, сумма в гросс")
+        bot.register_next_step_handler(message, calculate_taxes_progress_scale)
+    elif message.text == 'в меню':
+        bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать",
+                         reply_markup=markup)
+    else:
+        try:
+            number = int(message.text)
+            logging.info("message into int")
+            bot.send_message(message.chat.id, text=f'''привет, твоя зп после налогов:
+                            {number/2}''', reply_markup=markup)
+            bot.send_message(message.chat.id, text="Выбери, в меню, что ты хочешь сделать дальше",
+                         reply_markup=markup)
+            
+        except (TypeError, ValueError):
+            logging.info("type error message not int")
+            msg = bot.send_message(message.chat.id, "Вы ввели не число, попробуйте еще раз!")
+            bot.register_next_step_handler(msg, calculate_taxes_progress_scale)
 
 
 if __name__ == '__main__':
