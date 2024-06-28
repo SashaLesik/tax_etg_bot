@@ -40,13 +40,14 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def ask_question(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     question = message.text
     while question != "Вернуться в меню":
         # заглушка:
         msg = bot.send_message(message.chat.id, text="magic happens", reply_markup=markup) 
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button1 = types.KeyboardButton(":wave: Что я умею")
+        button1 = types.KeyboardButton("👋 Что я умею")
         button2 = types.KeyboardButton("Выбрать страну")
         button_3 = types.KeyboardButton("Задать вопрос")
         markup.add(button1, button2, button_3)
