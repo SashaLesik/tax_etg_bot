@@ -1,9 +1,10 @@
+# llm/Dockerfile
 FROM python:3.8-slim
 
 WORKDIR /app
-
 COPY . /app
 
-RUN pip3 install langchain_community tiktoken langchain-openai langchainhub chromadb langchain
+RUN pip install -r requirements.txt
 
-CMD ["sleep", "365d"]
+EXPOSE 5000
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5005", "--debug"]

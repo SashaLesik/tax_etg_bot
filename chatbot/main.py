@@ -3,10 +3,12 @@ import os
 import telebot
 from telebot import types
 from dotenv import load_dotenv
+import requests
 
 load_dotenv()
 
-logging.basicConfig(filename='bot.log', level=logging.INFO)
+#logging.basicConfig(filename='bot.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 APY_KEY = os.getenv('APY_KEY_')
 
@@ -47,7 +49,7 @@ def func(message):
         back = types.KeyboardButton("Вернуться в меню")
         markup.add(back)
         bot.send_message(message.chat.id, text="Напиши свой вопрос в свободной форме, чем больше деталей - тем лучше ответ", reply_markup=markup)
-        ask_question(message)
+        bot.register_next_step_handler(message, ask_question)
     elif (message.text == "Выбрать страну"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("Грузия")
@@ -152,7 +154,8 @@ def calculate_taxes_progress_scale(message):
             logging.info("message into int")
             bot.send_message(message.chat.id, text=f'''привет, твоя зп после налогов:
                             {number/2}''', reply_markup=markup)
-            bot.send_message(message.chat.id, text="Выбери, в меню, что ты хочешь сделать дальше",
+            # osh: мне каж можно это убрать и так понятно, что в меню надо что-то сделать
+            bot.send_message(message.chat.id, text="Выбери в меню, что ты хочешь сделать дальше",
                          reply_markup=markup)
             
         except (TypeError, ValueError):
@@ -164,19 +167,23 @@ def calculate_taxes_progress_scale(message):
 def ask_question(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     question = message.text
-    if question != "Вернуться в меню":
-        message.text
-        # заглушка:
-        msg = bot.send_message(message.chat.id, text="magic happens", reply_markup=markup)
+    while question != "Вернуться в меню":
+        try:
+            data = {'query': question}
+            response = requests.post('http://llm:5005/llm_query', json=data, headers={'Content-Type': 'application/json'})
+            logging.info(f"response {response.json()}")
+        except Exception:
+            response = 'Не получилось найти информацию :('
+            logging.error(f'Unsuccessful request: {response}')
+        msg = bot.send_message(message.chat.id, text=response.json()['response'], reply_markup=markup)
         bot.register_next_step_handler(msg, ask_question)
-    else:
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button1 = types.KeyboardButton("👋 Что я умею")
-        button2 = types.KeyboardButton("Выбрать страну")
-        button_3 = types.KeyboardButton("Задать вопрос")
-        markup.add(button1, button2, button_3)
-        msg_4 = bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
-        bot.register_next_step_handler(msg_4, func)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button1 = types.KeyboardButton("👋 Что я умею")
+    button2 = types.KeyboardButton("Выбрать страну")
+    button_3 = types.KeyboardButton("Задать вопрос")
+    markup.add(button1, button2, button_3)
+    msg_4 = bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
+    bot.register_next_step_handler(msg_4, func)
 
 if __name__ == '__main__':
 
