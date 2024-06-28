@@ -164,26 +164,27 @@ def calculate_taxes_progress_scale(message):
             bot.register_next_step_handler(msg, calculate_taxes_progress_scale)
 
 
+
+def handle_next_step(message):
+    if message.text != "Вернуться в меню":
+        ask_question(message)
+    else:
+        bot.register_next_step_handler(message, func)
+
 def ask_question(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     question = message.text
-    while question != "Вернуться в меню":
-        try:
-            data = {'query': question}
-            response = requests.post('http://llm:5005/llm_query', json=data, headers={'Content-Type': 'application/json'})
-            logging.info(f"response {response.json()}")
-        except Exception:
-            response = 'Не получилось найти информацию :('
-            logging.error(f'Unsuccessful request: {response}')
-        msg = bot.send_message(message.chat.id, text=response.json()['response'], reply_markup=markup)
-        bot.register_next_step_handler(msg, ask_question)
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    button1 = types.KeyboardButton("👋 Что я умею")
-    button2 = types.KeyboardButton("Выбрать страну")
-    button_3 = types.KeyboardButton("Задать вопрос")
-    markup.add(button1, button2, button_3)
-    msg_4 = bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
-    bot.register_next_step_handler(msg_4, func)
+    try:
+        data = {'query': question}
+        response = requests.post('http://llm:5005/llm_query', json=data, headers={'Content-Type': 'application/json'})
+        logging.info(f"response {response.json()}")
+    except Exception:
+        response = 'Не получилось найти информацию :('
+        logging.error(f'Unsuccessful request: {response}')
+    bot.send_message(message.chat.id, text=response.json()['response'], reply_markup=markup)
+    msg = bot.send_message(message.chat.id,
+                               'Можешь уточнить вопрос или задать новый. Нажми "вернуться в меню" чтобы вернуться')
+    bot.register_next_step_handler(msg, handle_next_step)
 
 if __name__ == '__main__':
 
