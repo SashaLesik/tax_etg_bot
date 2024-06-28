@@ -32,7 +32,8 @@ def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("👋 Что я умею")
     btn2 = types.KeyboardButton("Выбрать страну")
-    markup.add(btn1, btn2)
+    btn3 = types.KeyboardButton("Задать вопрос")
+    markup.add(btn1, btn2, btn3)
     msg_2 = bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я налоговый справочник собранный для ETG(Островок)".format(message.from_user), reply_markup=markup)
     bot.register_next_step_handler(msg_2, func)
 
@@ -41,6 +42,11 @@ def start(message):
 def func(message):
     if (message.text == "👋 Что я умею"):
         bot.send_message(message.chat.id, text="Описание")
+    elif (message.text == "Задать вопрос"):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        back = types.KeyboardButton("Вернуться в меню")
+        markup.add(back)
+        bot.send_message(message.chat.id, text="Напиши свой вопрос в свободной форме, чем больше деталей - тем лучше ответ", reply_markup=markup)
     elif (message.text == "Выбрать страну"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("Грузия")
@@ -58,7 +64,8 @@ def func(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button1 = types.KeyboardButton("👋 Что я умею")
         button2 = types.KeyboardButton("Выбрать страну")
-        markup.add(button1, button2)
+        button_3 = types.KeyboardButton("Задать вопрос")
+        markup.add(button1, button2, button_3)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
     elif (message.text in COUNTRYS):
@@ -83,7 +90,8 @@ def func(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button1 = types.KeyboardButton("👋 Что я умею")
         button2 = types.KeyboardButton("Выбрать страну")
-        markup.add(button1, button2)
+        button3 = types.KeyboardButton("Задать вопрос")
+        markup.add(button1, button2, button3)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
     elif (message.text == 'Как физлицо' and 'Армения'):
