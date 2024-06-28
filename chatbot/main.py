@@ -164,27 +164,24 @@ def calculate_taxes_progress_scale(message):
             bot.register_next_step_handler(msg, calculate_taxes_progress_scale)
 
 
-
-def handle_next_step(message):
-    if message.text != "Вернуться в меню":
-        ask_question(message)
-    else:
-        bot.register_next_step_handler(message, func)
-
 def ask_question(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     question = message.text
-    try:
-        data = {'query': question}
-        response = requests.post('http://llm:5005/llm_query', json=data, headers={'Content-Type': 'application/json'})
-        logging.info(f"response {response.json()}")
-    except Exception:
-        response = 'Не получилось найти информацию :('
-        logging.error(f'Unsuccessful request: {response}')
-    bot.send_message(message.chat.id, text=response.json()['response'], reply_markup=markup)
-    msg = bot.send_message(message.chat.id,
+    if question != 'Вернуться в меню':
+        try:
+            data = {'query': question}
+            response = requests.post('http://llm:5005/llm_query', json=data, headers={'Content-Type': 'application/json'})
+            logging.info(f"response {response.json()}")
+        except Exception:
+            response = 'Не получилось найти информацию :('
+            logging.error(f'Unsuccessful request: {response}')
+        bot.send_message(message.chat.id, text=response.json()['response'], reply_markup=markup)
+        msg = bot.send_message(message.chat.id, 
                                'Можешь уточнить вопрос или задать новый. Нажми "вернуться в меню" чтобы вернуться')
-    bot.register_next_step_handler(msg, handle_next_step)
+        bot.register_next_step_handler(msg, ask_question)
+    else:
+        func(message)
+
 
 if __name__ == '__main__':
 
