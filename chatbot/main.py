@@ -39,21 +39,6 @@ def start(message):
 
 
 @bot.message_handler(content_types=['text'])
-def ask_question(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    question = message.text
-    while question != "Вернуться в меню":
-        # заглушка:
-        msg = bot.send_message(message.chat.id, text="magic happens", reply_markup=markup) 
-    else:
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button1 = types.KeyboardButton("👋 Что я умею")
-        button2 = types.KeyboardButton("Выбрать страну")
-        button_3 = types.KeyboardButton("Задать вопрос")
-        markup.add(button1, button2, button_3)
-        bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
-
-
 def func(message):
     if (message.text == "👋 Что я умею"):
         bot.send_message(message.chat.id, text="Описание")
@@ -62,6 +47,7 @@ def func(message):
         back = types.KeyboardButton("Вернуться в меню")
         markup.add(back)
         bot.send_message(message.chat.id, text="Напиши свой вопрос в свободной форме, чем больше деталей - тем лучше ответ", reply_markup=markup)
+        ask_question(message)
     elif (message.text == "Выбрать страну"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("Грузия")
@@ -174,6 +160,23 @@ def calculate_taxes_progress_scale(message):
             msg = bot.send_message(message.chat.id, "Вы ввели не число, попробуйте еще раз!")
             bot.register_next_step_handler(msg, calculate_taxes_progress_scale)
 
+
+def ask_question(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    question = message.text
+    if question != "Вернуться в меню":
+        message.text
+        # заглушка:
+        msg = bot.send_message(message.chat.id, text="magic happens", reply_markup=markup)
+        bot.register_next_step_handler(msg, ask_question)
+    else:
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        button1 = types.KeyboardButton("👋 Что я умею")
+        button2 = types.KeyboardButton("Выбрать страну")
+        button_3 = types.KeyboardButton("Задать вопрос")
+        markup.add(button1, button2, button_3)
+        msg_4 = bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
+        bot.register_next_step_handler(msg_4, func)
 
 if __name__ == '__main__':
 
