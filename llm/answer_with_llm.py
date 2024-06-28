@@ -35,8 +35,8 @@ rag_chain = (
     | StrOutputParser()
 )
 def answer(query):
-    response = rag_chain.invoke(query)
-    return {"response": response}
+    #response = rag_chain.invoke(query)
+    return {"response": 'это респонс-затычка чтобы не тратить деньги пока цикл не починится))'}
 
 
 
