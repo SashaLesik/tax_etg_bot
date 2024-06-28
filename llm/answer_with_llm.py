@@ -1,9 +1,57 @@
-from litellm import completion
-import os
 
-## set ENV variables
-messages = [{ "content": "Hello, how are you?","role": "user"}]
+from langchain import hub
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import DirectoryLoader, TextLoader
+from langchain_community.vectorstores import Chroma
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+import bs4
 
-# openai call
-response = completion(model="gpt-3.5-turbo", messages=messages)
-print(response)
+#### INDEXING ####
+
+# Load Documents
+loader = DirectoryLoader(
+    './data', glob='**/*', loader_cls=TextLoader
+)
+docs = loader.load()
+
+# Split
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+splits = text_splitter.split_documents(docs)
+
+# Embed
+vectorstore = Chroma.from_documents(documents=splits,
+                                    embedding=OpenAIEmbeddings(), persist_directory="./chroma_db")
+
+# load from disk
+#db3 = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function)
+# test query extraction
+query = "Платят ли физические лица налоги в Сербии?"
+docs = vectorstore.similarity_search(query)
+print(docs[0].page_content)
+
+retriever = vectorstore.as_retriever()
+
+#### RETRIEVAL and GENERATION ####
+
+# Prompt
+prompt = hub.pull("rlm/rag-prompt")
+
+# LLM
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+
+# Post-processing
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
+
+# Chain
+rag_chain = (
+    {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt
+    | llm
+    | StrOutputParser()
+)
+
+# Question
+rag_chain.invoke("What is Task Decomposition?")
