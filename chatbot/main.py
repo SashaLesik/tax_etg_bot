@@ -23,8 +23,8 @@ Person_Arminia = 'тут будет ссылка на гугл док с опи�
 Individual_ent_Armenia = 'тут будет ссылка на гугл док'
 Person_Georgia = 'тут будет ссылка на гугл док с описанием'
 Individual_ent_Georgia = 'тут будет ссылка на гугл док'
-Person_Belarus = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Belarus = 'тут будет ссылка на гугл док'
+Person_Turkey = 'тут будет ссылка на гугл док с описанием'
+Individual_ent_Turkey = 'тут будет ссылка на гугл док'
 Person_Kazahstan = 'тут будет ссылка на гугл док с описанием'
 Individual_ent_Kazahstan = 'тут будет ссылка на гугл док'
 Person_Kyrgyzstan = 'тут будет ссылка на гугл док с описанием'
@@ -85,7 +85,7 @@ def func(message):
         btn2 = types.KeyboardButton("Армения")
         btn3 = types.KeyboardButton("Сербия")
         btn4 = types.KeyboardButton("Казахстан")
-        btn5 = types.KeyboardButton("Беларусь")
+        btn5 = types.KeyboardButton("Турция")
         btn6 = types.KeyboardButton("Кыргызстан")
         btn7 = types.KeyboardButton("Россия")
         back = types.KeyboardButton("Вернуться в меню")
@@ -136,10 +136,10 @@ def func(message):
     elif (message.text == 'Как ИП' and 'Грузия'):
         bot.send_message(message.chat.id, text= {Individual_ent_Georgia})
     
-    elif (message.text == 'Как физлицо' and 'Баларусь'):
-        bot.send_message(message.chat.id, text= {Person_Belarus})
+    elif (message.text == 'Как физлицо' and 'Турция'):
+        bot.send_message(message.chat.id, text= {Person_Turkey})
     elif (message.text == 'Как ИП' and 'Беларусь'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Belarus})
+        bot.send_message(message.chat.id, text= {Individual_ent_Turkey})
     
     elif (message.text == 'Как физлицо' and 'Казахстан'):
         bot.send_message(message.chat.id, text= {Person_Kazahstan})
@@ -175,8 +175,12 @@ def calculate_taxes_progress_scale(message):
         bot.send_message(message.chat.id, text="Введи свою зп с учетом бонусов за 1 месяц, сумма в гросс")
         bot.register_next_step_handler(message, calculate_taxes_progress_scale)
     elif message.text == 'в меню':
-        bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать",
-                         reply_markup=markup)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        button1 = types.KeyboardButton("👋 Что я умею")
+        button2 = types.KeyboardButton("Выбрать страну")
+        button3 = types.KeyboardButton("Задать вопрос")
+        markup.add(button1, button2, button3)
+        bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
     else:
         try:
             number = int(message.text)
