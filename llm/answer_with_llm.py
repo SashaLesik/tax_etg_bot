@@ -34,9 +34,10 @@ rag_chain = (
     | llm
     | StrOutputParser()
 )
-def answer(query):
-    #response = rag_chain.invoke(query)
-    return {"response": 'это респонс-затычка чтобы не тратить деньги пока цикл не починится))'}
+def answer(query, context):
+    #response = rag_chain.invoke(query + ' История сообщений: ' + context)
+    response = 'Тут будет ответ на вопрос ' + query + ' с контекстом ' + context
+    return {"response": response}
 
 
 

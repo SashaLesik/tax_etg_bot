@@ -7,8 +7,8 @@ import requests
 
 load_dotenv()
 
-#logging.basicConfig(filename='bot.log', level=logging.INFO)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(filename='bot.log', level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 APY_KEY = os.getenv('APY_KEY_')
 
@@ -49,7 +49,7 @@ def func(message):
         back = types.KeyboardButton("Вернуться в меню")
         markup.add(back)
         bot.send_message(message.chat.id, text="Напиши свой вопрос в свободной форме, чем больше деталей - тем лучше ответ", reply_markup=markup)
-        bot.register_next_step_handler(message, ask_question)
+        bot.register_next_step_handler(message, ask_question, '')
     elif (message.text == "Выбрать страну"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("Грузия")
@@ -164,21 +164,22 @@ def calculate_taxes_progress_scale(message):
             bot.register_next_step_handler(msg, calculate_taxes_progress_scale)
 
 
-def ask_question(message):
+def ask_question(message, context):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     question = message.text
     if question != 'Вернуться в меню':
         try:
-            data = {'query': question}
-            response = requests.post('http://llm:5005/llm_query', json=data, headers={'Content-Type': 'application/json'})
-            logging.info(f"response {response.json()}")
+            data = {'query': question, "context": context}
+            response = requests.post('http://llm:5005/llm_query', json=data, headers={'Content-Type': 'application/json'}).json()['response']
+            logging.info(f"response {response}")
+            context += question + ' ' + response
         except Exception:
             response = 'Не получилось найти информацию :('
             logging.error(f'Unsuccessful request: {response}')
-        bot.send_message(message.chat.id, text=response.json()['response'], reply_markup=markup)
+        bot.send_message(message.chat.id, text=response, reply_markup=markup)
         msg = bot.send_message(message.chat.id, 
                                'Можешь уточнить вопрос или задать новый. Нажми "вернуться в меню" чтобы вернуться')
-        bot.register_next_step_handler(msg, ask_question)
+        bot.register_next_step_handler(msg, ask_question, context)
     else:
         func(message)
 

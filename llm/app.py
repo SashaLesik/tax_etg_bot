@@ -10,7 +10,8 @@ def llm_query():
     logger.debug(f'instide')
     data = request.get_json()
     query = data['query']
+    context = data['context']
     logger.debug(f'query {query}')
-    response = answer(query)
+    response = answer(query, context)
     logger.debug(f'got response {response}')
     return jsonify(response)
