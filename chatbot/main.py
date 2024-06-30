@@ -10,8 +10,8 @@ getcontext().prec = 7
 
 load_dotenv()
 
-logging.basicConfig(filename='bot.log', level=logging.INFO)
-#logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(filename='bot.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 APY_KEY = os.getenv('APY_KEY_')
 
