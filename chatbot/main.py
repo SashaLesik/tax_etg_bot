@@ -5,6 +5,15 @@ from telebot import types
 from dotenv import load_dotenv
 import requests
 from decimal import Decimal, getcontext
+from texst_content import (Person_Arminia, Individual_ent_Armenia,
+                           Person_Georgia,
+                           Individual_ent_Georgia, Person_Turkey,
+                           Individual_ent_Turkey,
+                           Person_Kazahstan, Individual_ent_Kazahstan,
+                           Person_Kyrgyzstan,
+                           Individual_ent_Kyrgyzstan, Person_Serbia,
+                           Individual_ent_Serbia,
+                           DESCRIPTION)
 
 getcontext().prec = 7
 
@@ -18,20 +27,6 @@ APY_KEY = os.getenv('APY_KEY_')
 bot = telebot.TeleBot(APY_KEY)
 
 COUNTRYS = ['Армения', 'Грузия', 'Сербия', 'Казахстан', 'Турция', 'Кыргызстан']
-
-Person_Arminia = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Armenia = 'тут будет ссылка на гугл док'
-Person_Georgia = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Georgia = 'тут будет ссылка на гугл док'
-Person_Turkey = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Turkey = 'тут будет ссылка на гугл док'
-Person_Kazahstan = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Kazahstan = 'тут будет ссылка на гугл док'
-Person_Kyrgyzstan = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Kyrgyzstan = 'тут будет ссылка на гугл док'
-Person_Serbia = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Serbia = 'тут будет ссылка на гугл док'
-DESCRIPTION = 'Тут будет описание. Для России расчеты приведены для резиентов, устроенных по ТК РФ'
 
 def calculate_tax_2025(number):
     number = Decimal(str(number))
@@ -101,6 +96,8 @@ def func(message):
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
     elif (message.text in COUNTRYS):
+        global selected_country
+        selected_country = message.text
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         bt = types.KeyboardButton("Как физлицо")
         bt_1 = types.KeyboardButton("Как ИП")
@@ -113,6 +110,16 @@ def func(message):
         b = types.KeyboardButton("Рассчет по шкале 2025")
         b_1 = types.KeyboardButton("в меню")
         markup.add(b, b_1)
+        bot.send_message(message.chat.id, text='''Для всех, кто живет в РФ постоянно в нашей компании предусмотрено оформление по трудовому договору, компания будет делать отчисления за вас, однако мы решили помочь вам быть в курсе изменений в налоговом законодательстве, так как они могут повлиять на ваши доходы.
+
+Новая шкала НДФЛ (с 2025 года) будет включать пять ступеней — от 13 до 22 %:
+-Ставка 13 % будет действовать для доходов менее 200 000 ₽ в месяц или 2 400 000 ₽ в год.
+-Ставка 15 % — для части дохода в диапазоне 200 000–416 700 ₽ в месяц или 2 400 000–5 000 000 ₽ в год.
+-Ставка 18 % — для части дохода в диапазоне 416 700–1 670 000 ₽ в месяц или 5 000 000–20 000 000 ₽ в год.
+-Ставка 20 % — для части дохода в диапазоне 1 670 000–4 170 000 ₽ в месяц или 20 000 000–50 000 000 ₽ в год.
+-Ставка 22 % — при доходах свыше 4 170 000 ₽ в месяц или больше 50 000 000 ₽ в год.
+Повышенную ставку нужно будет платить только с суммы превышения, как и сейчас.
+''')
         bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать", reply_markup=markup)
     
     elif (message.text == "Рассчет по шкале 2025"):
@@ -126,35 +133,36 @@ def func(message):
         markup.add(button1, button2, button3)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
-    elif (message.text == 'Как физлицо' and 'Армения'):
-        bot.send_message(message.chat.id, text= {Person_Arminia})
-    elif (message.text == 'Как ИП' and 'Армения'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Armenia})
+    elif (message.text == 'Как физлицо' and selected_country == 'Армения'):
+        view_content_per_country(message, selected_country, Person_Arminia)
+    elif (message.text == 'Как ИП' and selected_country == 'Армения'):
+        view_content_per_country(message, selected_country, Individual_ent_Armenia)
     
-    elif (message.text == 'Как физлицо' and 'Грузия'):
-        bot.send_message(message.chat.id, text= {Person_Georgia})
-    elif (message.text == 'Как ИП' and 'Грузия'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Georgia})
+    elif (message.text == 'Как физлицо' and selected_country == 'Грузия'):
+        view_content_per_country(message, selected_country, Person_Georgia)
+    elif (message.text == 'Как ИП' and selected_country == 'Грузия'):
+        view_content_per_country(message, selected_country, Individual_ent_Georgia)
     
-    elif (message.text == 'Как физлицо' and 'Турция'):
-        bot.send_message(message.chat.id, text= {Person_Turkey})
-    elif (message.text == 'Как ИП' and 'Беларусь'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Turkey})
+    elif (message.text == 'Как физлицо' and selected_country == 'Турция'):
+        view_content_per_country(message, selected_country, Person_Turkey)
+    elif (message.text == 'Как ИП' and selected_country == 'Турция'):
+        view_content_per_country(message, selected_country, Individual_ent_Turkey)
     
-    elif (message.text == 'Как физлицо' and 'Казахстан'):
-        bot.send_message(message.chat.id, text= {Person_Kazahstan})
-    elif (message.text == 'Как ИП' and 'Казахстан'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Kazahstan})
+    elif (message.text == 'Как физлицо' and selected_country == 'Казахстан'):
+        view_content_per_country(message, selected_country, Person_Kazahstan)
+
+    elif (message.text == 'Как ИП' and selected_country == 'Казахстан'):
+        view_content_per_country(message, selected_country, Individual_ent_Kazahstan)
     
-    elif (message.text == 'Как физлицо' and 'Кыргызстан'):
-        bot.send_message(message.chat.id, text= {Person_Kyrgyzstan})
-    elif (message.text == 'Как ИП' and 'Кыргызстан'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Kyrgyzstan})
+    elif (message.text == 'Как физлицо' and selected_country == 'Кыргызстан'):
+        view_content_per_country(message, selected_country, Person_Kyrgyzstan)
+    elif (message.text == 'Как ИП' and selected_country == 'Кыргызстан'):
+        view_content_per_country(message, selected_country, Individual_ent_Kyrgyzstan)
     
-    elif (message.text == 'Как физлицо' and 'Сербия'):
-        bot.send_message(message.chat.id, text= {Person_Serbia})
-    elif (message.text == 'Как ИП' and 'Сербия'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Serbia})
+    elif (message.text == 'Как физлицо' and selected_country == 'Сербия'):
+        view_content_per_country(message, selected_country, Person_Serbia)
+    elif (message.text == 'Как ИП' and selected_country == 'Сербия'):
+        view_content_per_country(message, selected_country, Individual_ent_Serbia)
 
 
 def input_salary_gross(message):
@@ -187,15 +195,18 @@ def calculate_taxes_progress_scale(message):
             logging.info("message into int")
             bot.send_message(message.chat.id, text=f'''привет, твоя зп после налогов (в месяц):
                             {calculate_tax_2025(number)}''', reply_markup=markup)
-            # osh: мне каж можно это убрать и так понятно, что в меню надо что-то сделать
-            # bot.send_message(message.chat.id, text="Выбери в меню, что ты хочешь сделать дальше",
-            #                  reply_markup=markup)
-            bot.register_next_step_handler(message, calculate_taxes_progress_scale)
+            bot.register_next_step_handler(message,
+                                           calculate_taxes_progress_scale)
             
         except (TypeError, ValueError):
             logging.info("type error message not int")
             msg = bot.send_message(message.chat.id, "Вы ввели не число, попробуйте еще раз!")
             bot.register_next_step_handler(msg, calculate_taxes_progress_scale)
+
+def view_content_per_country(message, selected_country, content):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    bot.send_message(message.chat.id, text={content}, reply_markup=markup)
+    bot.register_next_step_handler(message, func)
 
 
 def ask_question(message, context):
