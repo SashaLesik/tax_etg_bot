@@ -96,6 +96,8 @@ def func(message):
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
     elif (message.text in COUNTRYS):
+        global selected_country
+        selected_country = message.text
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         bt = types.KeyboardButton("Как физлицо")
         bt_1 = types.KeyboardButton("Как ИП")
@@ -131,35 +133,59 @@ def func(message):
         markup.add(button1, button2, button3)
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
-    elif (message.text == 'Как физлицо' and 'Армения'):
-        bot.send_message(message.chat.id, text={Person_Arminia})
-    elif (message.text == 'Как ИП' and 'Армения'):
-        bot.send_message(message.chat.id, text={Individual_ent_Armenia})
+    elif (message.text == 'Как физлицо' and selected_country == 'Армения'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Person_Arminia}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
+    elif (message.text == 'Как ИП' and selected_country == 'Армения'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Individual_ent_Armenia}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
     
-    elif (message.text == 'Как физлицо' and 'Грузия'):
-        bot.send_message(message.chat.id, text={Person_Georgia})
-    elif (message.text == 'Как ИП' and 'Грузия'):
-        bot.send_message(message.chat.id, text={Individual_ent_Georgia})
+    elif (message.text == 'Как физлицо' and selected_country == 'Грузия'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Person_Georgia}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
+    elif (message.text == 'Как ИП' and selected_country == 'Грузия'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Individual_ent_Georgia}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
     
-    elif (message.text == 'Как физлицо' and 'Турция'):
-        bot.send_message(message.chat.id, text={Person_Turkey})
-    elif (message.text == 'Как ИП' and 'Турция'):
-        bot.send_message(message.chat.id, text={Individual_ent_Turkey})
+    elif (message.text == 'Как физлицо' and selected_country == 'Турция'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Person_Turkey}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
+    elif (message.text == 'Как ИП' and selected_country == 'Турция'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Individual_ent_Turkey}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
     
-    elif (message.text == 'Как физлицо' and 'Казахстан'):
-        bot.send_message(message.chat.id, text={Person_Kazahstan})
-    elif (message.text == 'Как ИП' and 'Казахстан'):
-        bot.send_message(message.chat.id, text={Individual_ent_Kazahstan})
+    elif (message.text == 'Как физлицо' and selected_country == 'Казахстан'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Person_Kazahstan}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
+    elif (message.text == 'Как ИП' and selected_country == 'Казахстан'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Individual_ent_Kazahstan}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
     
-    elif (message.text == 'Как физлицо' and 'Кыргызстан'):
-        bot.send_message(message.chat.id, text={Person_Kyrgyzstan})
-    elif (message.text == 'Как ИП' and 'Кыргызстан'):
-        bot.send_message(message.chat.id, text={Individual_ent_Kyrgyzstan})
+    elif (message.text == 'Как физлицо' and selected_country == 'Кыргызстан'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Person_Kyrgyzstan}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
+    elif (message.text == 'Как ИП' and selected_country == 'Кыргызстан'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Individual_ent_Kyrgyzstan}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
     
-    elif (message.text == 'Как физлицо' and 'Сербия'):
-        bot.send_message(message.chat.id, text={Person_Serbia})
-    elif (message.text == 'Как ИП' and 'Сербия'):
-        bot.send_message(message.chat.id, text={Individual_ent_Serbia})
+    elif (message.text == 'Как физлицо' and selected_country == 'Сербия'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Person_Serbia}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
+    elif (message.text == 'Как ИП' and selected_country == 'Сербия'):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={Individual_ent_Serbia}, reply_markup=markup)
+        bot.register_next_step_handler(message, func)
 
 
 def input_salary_gross(message):
@@ -192,10 +218,8 @@ def calculate_taxes_progress_scale(message):
             logging.info("message into int")
             bot.send_message(message.chat.id, text=f'''привет, твоя зп после налогов (в месяц):
                             {calculate_tax_2025(number)}''', reply_markup=markup)
-            # osh: мне каж можно это убрать и так понятно, что в меню надо что-то сделать
-            # bot.send_message(message.chat.id, text="Выбери в меню, что ты хочешь сделать дальше",
-            #                  reply_markup=markup)
-            bot.register_next_step_handler(message, calculate_taxes_progress_scale)
+            bot.register_next_step_handler(message,
+                                           calculate_taxes_progress_scale)
             
         except (TypeError, ValueError):
             logging.info("type error message not int")
