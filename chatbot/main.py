@@ -67,7 +67,8 @@ def start(message):
 @bot.message_handler(content_types=['text'])
 def func(message):
     if (message.text == "👋 Что я умею"):
-        bot.send_message(message.chat.id, text={DESCRIPTION})
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        bot.send_message(message.chat.id, text={DESCRIPTION}, parse_mode='Markdown')
     elif (message.text == "Задать вопрос"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         back = types.KeyboardButton("Вернуться в меню")
