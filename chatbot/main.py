@@ -5,6 +5,15 @@ from telebot import types
 from dotenv import load_dotenv
 import requests
 from decimal import Decimal, getcontext
+from texst_content import (Person_Arminia, Individual_ent_Armenia,
+                           Person_Georgia,
+                           Individual_ent_Georgia, Person_Turkey,
+                           Individual_ent_Turkey,
+                           Person_Kazahstan, Individual_ent_Kazahstan,
+                           Person_Kyrgyzstan,
+                           Individual_ent_Kyrgyzstan, Person_Serbia,
+                           Individual_ent_Serbia,
+                           DESCRIPTION)
 
 getcontext().prec = 7
 
@@ -18,20 +27,6 @@ APY_KEY = os.getenv('APY_KEY_')
 bot = telebot.TeleBot(APY_KEY)
 
 COUNTRYS = ['Армения', 'Грузия', 'Сербия', 'Казахстан', 'Турция', 'Кыргызстан']
-
-Person_Arminia = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Armenia = 'тут будет ссылка на гугл док'
-Person_Georgia = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Georgia = 'тут будет ссылка на гугл док'
-Person_Turkey = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Turkey = 'тут будет ссылка на гугл док'
-Person_Kazahstan = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Kazahstan = 'тут будет ссылка на гугл док'
-Person_Kyrgyzstan = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Kyrgyzstan = 'тут будет ссылка на гугл док'
-Person_Serbia = 'тут будет ссылка на гугл док с описанием'
-Individual_ent_Serbia = 'тут будет ссылка на гугл док'
-DESCRIPTION = 'Тут будет описание. Для России расчеты приведены для резиентов, устроенных по ТК РФ'
 
 def calculate_tax_2025(number):
     number = Decimal(str(number))
@@ -113,6 +108,16 @@ def func(message):
         b = types.KeyboardButton("Рассчет по шкале 2025")
         b_1 = types.KeyboardButton("в меню")
         markup.add(b, b_1)
+        bot.send_message(message.chat.id, text='''Для всех, кто живет в РФ постоянно в нашей компании предусмотрено оформление по трудовому договору, компания будет делать отчисления за вас, однако мы решили помочь вам быть в курсе изменений в налоговом законодательстве, так как они могут повлиять на ваши доходы.
+
+Новая шкала НДФЛ (с 2025 года) будет включать пять ступеней — от 13 до 22 %:
+-Ставка 13 % будет действовать для доходов менее 200 000 ₽ в месяц или 2 400 000 ₽ в год.
+-Ставка 15 % — для части дохода в диапазоне 200 000–416 700 ₽ в месяц или 2 400 000–5 000 000 ₽ в год.
+-Ставка 18 % — для части дохода в диапазоне 416 700–1 670 000 ₽ в месяц или 5 000 000–20 000 000 ₽ в год.
+-Ставка 20 % — для части дохода в диапазоне 1 670 000–4 170 000 ₽ в месяц или 20 000 000–50 000 000 ₽ в год.
+-Ставка 22 % — при доходах свыше 4 170 000 ₽ в месяц или больше 50 000 000 ₽ в год.
+Повышенную ставку нужно будет платить только с суммы превышения, как и сейчас.
+''')
         bot.send_message(message.chat.id, text="Выбери, что ты хочешь сделать", reply_markup=markup)
     
     elif (message.text == "Рассчет по шкале 2025"):
@@ -127,34 +132,34 @@ def func(message):
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
     elif (message.text == 'Как физлицо' and 'Армения'):
-        bot.send_message(message.chat.id, text= {Person_Arminia})
+        bot.send_message(message.chat.id, text={Person_Arminia})
     elif (message.text == 'Как ИП' and 'Армения'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Armenia})
+        bot.send_message(message.chat.id, text={Individual_ent_Armenia})
     
     elif (message.text == 'Как физлицо' and 'Грузия'):
-        bot.send_message(message.chat.id, text= {Person_Georgia})
+        bot.send_message(message.chat.id, text={Person_Georgia})
     elif (message.text == 'Как ИП' and 'Грузия'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Georgia})
+        bot.send_message(message.chat.id, text={Individual_ent_Georgia})
     
     elif (message.text == 'Как физлицо' and 'Турция'):
-        bot.send_message(message.chat.id, text= {Person_Turkey})
-    elif (message.text == 'Как ИП' and 'Беларусь'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Turkey})
+        bot.send_message(message.chat.id, text={Person_Turkey})
+    elif (message.text == 'Как ИП' and 'Турция'):
+        bot.send_message(message.chat.id, text={Individual_ent_Turkey})
     
     elif (message.text == 'Как физлицо' and 'Казахстан'):
-        bot.send_message(message.chat.id, text= {Person_Kazahstan})
+        bot.send_message(message.chat.id, text={Person_Kazahstan})
     elif (message.text == 'Как ИП' and 'Казахстан'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Kazahstan})
+        bot.send_message(message.chat.id, text={Individual_ent_Kazahstan})
     
     elif (message.text == 'Как физлицо' and 'Кыргызстан'):
-        bot.send_message(message.chat.id, text= {Person_Kyrgyzstan})
+        bot.send_message(message.chat.id, text={Person_Kyrgyzstan})
     elif (message.text == 'Как ИП' and 'Кыргызстан'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Kyrgyzstan})
+        bot.send_message(message.chat.id, text={Individual_ent_Kyrgyzstan})
     
     elif (message.text == 'Как физлицо' and 'Сербия'):
-        bot.send_message(message.chat.id, text= {Person_Serbia})
+        bot.send_message(message.chat.id, text={Person_Serbia})
     elif (message.text == 'Как ИП' and 'Сербия'):
-        bot.send_message(message.chat.id, text= {Individual_ent_Serbia})
+        bot.send_message(message.chat.id, text={Individual_ent_Serbia})
 
 
 def input_salary_gross(message):
