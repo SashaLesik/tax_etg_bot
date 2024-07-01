@@ -7,7 +7,7 @@ app = Flask(__name__)
 # curl localhost:5005/llm_query -d '{"query": "Сколько налог в Сербии?"}' -H 'Content-Type: application/json'
 @app.route('/llm_query', methods=['POST'])
 def llm_query():
-    logger.debug(f'instide')
+    logger.debug(f'inside')
     data = request.get_json()
     query = data['query']
     context = data['context']
