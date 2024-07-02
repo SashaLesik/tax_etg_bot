@@ -62,7 +62,7 @@ def start(message):
     btn3 = types.KeyboardButton("Задать вопрос")
     markup.add(btn1, btn2, btn3)
     msg_2 = bot.send_message(message.chat.id,
-                             text="Привет, {0.first_name}! Я налоговый справочник собранный для ETG(Островок)".format(message.from_user), reply_markup=markup)
+                             text="Привет, {0.first_name}! Я налоговый справочник по разным странам".format(message.from_user), reply_markup=markup)
     bot.register_next_step_handler(msg_2, func)
 
 
